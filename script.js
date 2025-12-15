@@ -10,7 +10,7 @@ const produits = [
 const boutique = document.getElementById("boutiue");
 const container = document.getElementById("produits-container");
 const panier = document.getElementById("panier-liste");
-
+const totalPrice = document.getElementById("montant-total");
 //User local data / user cart
 const userCart = JSON.parse(localStorage.getItem("userCart")) || createNewUserCart(); //import from localStorage
 
@@ -19,41 +19,71 @@ produits.forEach((produit) => {
     createProductCard(produit, false);
 })
     
-function createProductCard(produit,cartClone) {
+function createProductCard(produit, cartClone) {
+    //New card element
     const newElem = document.createElement("div");
+    let cardClass = cartClone ? "cartCard" : "card";
+    newElem.classList = cardClass;
 
+    
+    //Card image
     const elemImg = document.createElement("img");
     elemImg.src = produit.image;
+    let imgClass = cartClone ? "cartCard__img" : "card__img";
+    elemImg.classList = imgClass;
     newElem.appendChild(elemImg);
-
-    let cardClass = cartClone ? "produit-carte-panier" : "produit-carte"
-    newElem.classList = cardClass;
-    if (!cartClone) newElem.addEventListener("click", () => {addToCart(produit);})
     
     
+    //Card title => Product Name
     const elemTitle = document.createElement("h3");
+    let titleClass = cartClone ? "cartCard__name" : "card__name";
     elemTitle.textContent = produit.nom;
+    elemTitle.classList = titleClass;
     newElem.appendChild(elemTitle);
-
-    const addToCartBttn = document.createElement("button");
-    addToCartBttn.textContent = "Ajouter au panier";
-    newElem.appendChild(addToCartBttn);
-
-    const removeOneFromCartBttn = document.createElement("button");
-    removeOneFromCartBttn.textContent = "-";
-    newElem.appendChild(removeOneFromCartBttn);
-
-
+    
+    //Card price 
     const elemPrice = document.createElement("p");
+    let priceClass = cartClone ? "cartCard__price" : "card__price";
     elemPrice.textContent = produit.prix +" €";
     newElem.appendChild(elemPrice);
 
+    //Add to cart button
+    const addToCartBttn = document.createElement("button");
+    let buttonText = cartClone ? "+" : "Ajouter au panier";
+    addToCartBttn.textContent = buttonText;
+    let addButtonClass = cartClone ? "cartCard__addToCartBttn" :"card__addToCartBttn";
+    addToCartBttn.classList = "card__addToCartBttn";
+    newElem.appendChild(addToCartBttn);
+    addToCartBttn.addEventListener("click", () => { addToCart(produit); });
+
+    //Remove from cart button in card cart
+    if (cartClone) {
+        const removeOneFromCartBttn = document.createElement("button");
+        removeOneFromCartBttn.textContent = "-";
+        removeOneFromCartBttn.classList = "cartCard__removeFromCartBttn";
+        newElem.appendChild(removeOneFromCartBttn); 
+        removeOneFromCartBttn.addEventListener('click',() => { removeFromCart(produit); });
+    }
+
+    //Subtotal 
+    if (cartClone) {
+        const elemAmount = document.createElement("p");
+        elemAmount.classList ="cartCard__amount";
+        elemAmount.textContent = userCart.find(u => u.id === produit.id).amount;
+        newElem.appendChild(elemAmount);
+
+        const subTotal = document.createElement("p");
+        subTotal.classList ="cartCard__subtotal";
+        subTotal.textContent = (userCart.find(u => u.id === produit.id).amount * produit.prix) + " €";
+        newElem.appendChild(subTotal);
+    }
 
     if (cartClone) {
+        newElem.classList = ("cartCard hidden productID" + produit.id);
         panier.appendChild(newElem);
-
     }
     else {
+        newElem.classList = "card";
         container.appendChild(newElem);
         createProductCard(produit, true); //create the same card but in the cart
     }   
@@ -73,10 +103,10 @@ function addToCart(produit) {
     userCart[produit.id - 1].amount++;
     //update localStorage
     localStorage.setItem("userCart", JSON.stringify(userCart));
-
+    renderCart();
 }
 
-function removeFromACart(produit) {
+function removeFromCart(produit) {
     //check if amount < 0
     let newAmount = userCart[produit.id - 1].amount;
     newAmount = newAmount - 1 < 0 ? 0 : newAmount - 1;
@@ -84,7 +114,29 @@ function removeFromACart(produit) {
     userCart[produit.id - 1].amount = newAmount;
     //update localStorage
     localStorage.setItem("userCart", JSON.stringify(userCart));
+    renderCart();
+}
+
+function renderCart() {
+    //display products cards correctly in the cart
+    let total = 0;
+    userCart.forEach((product) => {
+        const productElem = document.querySelector(".productID" + product.id); //only one exist so querySelector is suffficient
+        if (product.amount <= 0) productElem.classList.toggle("hidden", true);
+        else{
+            productElem.classList.toggle("hidden", false); //display the card in the cart
+            //update the textContents
+            productElem.querySelector(".cartCard__amount").textContent = product.amount;
+            let subtotal = (product.amount * (produits.find(u => u.id === product.id).prix));
+            productElem.querySelector(".cartCard__subtotal").textContent = subtotal + " €";
+            total += subtotal;
+        }
+
+    })
+
+    //update total
+    totalPrice.textContent = total;
 
 }
 
-//utility functions 
+renderCart();
