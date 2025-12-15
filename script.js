@@ -69,6 +69,7 @@ function createProductCard(produit, cartClone) {
     //Card price 
     const elemPrice = document.createElement("p");
     let priceClass = cartClone ? "cartCard__price" : "card__price";
+    elemPrice.classList = priceClass;
     elemPrice.textContent = produit.prix +" €";
     newElem.appendChild(elemPrice);
 
@@ -76,31 +77,41 @@ function createProductCard(produit, cartClone) {
     const addToCartBttn = document.createElement("button");
     let buttonText = cartClone ? "+" : "Ajouter au panier";
     addToCartBttn.textContent = buttonText;
-    let addButtonClass = cartClone ? "cartCard__addToCartBttn" :"card__addToCartBttn";
-    addToCartBttn.classList = "card__addToCartBttn";
-    newElem.appendChild(addToCartBttn);
+    let addButtonClass = cartClone ? "cartCard__amountWrapper__addToCartBttn" :"card__addToCartBttn";
+    addToCartBttn.classList = addButtonClass;
+    if(!cartClone) newElem.appendChild(addToCartBttn);
     addToCartBttn.addEventListener("click", () => { addToCart(produit); });
 
     //Remove from cart button in card cart
     if (cartClone) {
-        const removeOneFromCartBttn = document.createElement("button");
-        removeOneFromCartBttn.textContent = "-";
-        removeOneFromCartBttn.classList = "cartCard__removeFromCartBttn";
-        newElem.appendChild(removeOneFromCartBttn); 
-        removeOneFromCartBttn.addEventListener('click',() => { removeFromCart(produit); });
+
     }
 
     //Subtotal 
     if (cartClone) {
+        const cardAmountWrapper = document.createElement("div")
+        cardAmountWrapper.classList = "cartCard__amountWrapper";
+        newElem.appendChild(cardAmountWrapper);
+
+        cardAmountWrapper.appendChild(addToCartBttn);
+        addToCartBttn.addEventListener("click", () => { addToCart(produit); });
+
+        const removeOneFromCartBttn = document.createElement("button");
+        removeOneFromCartBttn.textContent = "-";
+        removeOneFromCartBttn.classList = "cartCard__removeFromCartBttn";
+        removeOneFromCartBttn.addEventListener('click',() => { removeFromCart(produit); });
+        cardAmountWrapper.appendChild(removeOneFromCartBttn); 
+
         const elemAmount = document.createElement("p");
-        elemAmount.classList ="cartCard__amount";
+        elemAmount.classList ="cartCard__amountWrapper__amount";
         elemAmount.textContent = userCart.find(u => u.id === produit.id).amount;
-        newElem.appendChild(elemAmount);
+        cardAmountWrapper.appendChild(elemAmount);
 
         const subTotal = document.createElement("p");
         subTotal.classList ="cartCard__subtotal";
         subTotal.textContent = (userCart.find(u => u.id === produit.id).amount * produit.prix) + " €";
         newElem.appendChild(subTotal);
+
     }
 
     if (cartClone) {
@@ -144,7 +155,7 @@ function renderCart() {
         else{
             productElem.classList.toggle("hidden", false); //display the card in the cart
             //update the textContents
-            productElem.querySelector(".cartCard__amount").textContent = product.amount;
+            productElem.querySelector(".cartCard__amountWrapper__amount").textContent = product.amount;
             let subtotal = (product.amount * (produits.find(u => u.id === product.id).prix));
             productElem.querySelector(".cartCard__subtotal").textContent = subtotal + " €";
             total += subtotal;
