@@ -94,7 +94,6 @@ function createProductCard(produit, cartClone) {
         newElem.appendChild(cardAmountWrapper);
 
         cardAmountWrapper.appendChild(addToCartBttn);
-        addToCartBttn.addEventListener("click", () => { addToCart(produit); });
 
         const removeOneFromCartBttn = document.createElement("button");
         removeOneFromCartBttn.textContent = "-";
@@ -115,7 +114,7 @@ function createProductCard(produit, cartClone) {
     }
 
     if (cartClone) {
-        newElem.classList = ("cartCard hidden productID" + produit.id);
+        newElem.classList = ("cartCard odd hidden productID" + produit.id);
         panier.appendChild(newElem);
     }
     else {
@@ -149,20 +148,29 @@ function removeFromCart(produit) {
 function renderCart() {
     //display products cards correctly in the cart
     let total = 0;
+    let emptyCart = true;
+    let odd = false;
     userCart.forEach((product) => {
         const productElem = document.querySelector(".productID" + product.id); //only one exist so querySelector is suffficient
-        if (product.amount <= 0) productElem.classList.toggle("hidden", true);
-        else{
+        if (product.amount <= 0) {
+            productElem.classList.toggle("hidden", true);
+        } 
+        else {
+            emptyCart = false;
             productElem.classList.toggle("hidden", false); //display the card in the cart
+            productElem.classList.toggle("odd", odd);
             //update the textContents
             productElem.querySelector(".cartCard__amountWrapper__amount").textContent = product.amount;
             let subtotal = (product.amount * (produits.find(u => u.id === product.id).prix));
             productElem.querySelector(".cartCard__subtotal").textContent = subtotal + " €";
             total += subtotal;
+            odd = !odd;
         }
 
     })
 
+
+    document.querySelector(".empty-cart-p").classList.toggle("hidden", !emptyCart);
     //update total
     totalPrice.textContent = total;
 
