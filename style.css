@@ -3,6 +3,9 @@
     --green-darkcolor :rgb(53, 82, 36);
     --beige-lightcolor :rgb(201, 167, 93);
     --beige-darkcolor :rgb(173, 137, 57);
+
+    --title-font :"Playfair Display", serif;;
+    --text-font :"Lato", sans-serif;
 }
 
 *{
@@ -12,9 +15,10 @@
 body{
     margin: 0;
     padding: 0;
-
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    font-family: var(--text-font);
 }
 
 header{
@@ -24,23 +28,29 @@ header{
 
 }
 
-
+h1{
+    font-family: var(--title-font);
+    color: var(--beige-darkcolor);
+}
 main{
     display: flex;
     justify-content: center;
-    
+    flex-grow: 1;
 }
 
 #boutique{
     display: flex;
     flex-direction: column;
+    justify-content: center;
     background-color: var(--green-darkcolor);
+    flex-grow: 1; /* for big screen width*/
 }
 
 @media (max-width: 1100px) {
  
     main{
         flex-direction: column;
+        width: 100%;
     }
 
     #boutique{
@@ -50,6 +60,10 @@ main{
 
 h2{
     align-self: center;
+    font-family: var(--title-font);
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
 }
 
 .grid-produits{
@@ -67,8 +81,8 @@ h2{
     flex-direction: column;
     align-items: center;
 
-    padding: 20px 10px;
-    width: 200px;
+    padding: 15px 5px;
+    width: 190px;
 
     
     background-color: var(--beige-lightcolor);
@@ -92,20 +106,22 @@ h2{
     padding: 5px 10px;
     background-color: var(--green-lightcolor);
     border-radius: 10px;
+    cursor: pointer;
+
 }
 
 
 #panier-section{
     display: flex;
     flex-direction: column;
-    align-items: center;
-    flex-grow: 2;
+
+    align-items: center; /* order box*/
 
     background-color: var(--green-lightcolor)
 }
 
-#panier-liste{
-    align-self: stretch;
+.empty-cart-p{
+    text-align: center;
 }
 
 .cartCard{
@@ -115,11 +131,21 @@ h2{
     width: 600px;
 }
 @media (max-width: 1100px) {
- 
+    
+    #panier-section{
+        width: 100%;
+    }
+
+    #panier-liste{
+        width: 100%;
+
+    }   
     .cartCard{
         width: 100%;
     }
 }
+
+
 .odd{
     background-color: var(--beige-lightcolor);
 }
@@ -137,7 +163,7 @@ h2{
 
 .cartCard__price{
     order: 2;
-    padding-right: 20px;
+    padding-right: 10px;
 }
 
 .cartCard__amountWrapper{
@@ -155,6 +181,8 @@ h2{
     background-color: var(--green-lightcolor);
     border-style: none;
     border-radius: 5px;
+
+    cursor: pointer;
 }
 
 .cartCard__amountWrapper__removeFromCartBttn{
@@ -176,19 +204,48 @@ h2{
 
 .cartCard__subtotal{
     order: 4;
-    margin : 0 20px 0 0;
-    width: 75px;
+    padding : 0 10px 0 0;
+    width: 90px;
     text-align: right;
     font-weight: bold;
     font-size: 1.3rem;
 
 }
 
+/*for the tiny screens*/
+@media (max-width: 550px) {
+    
+    .cartCard__img{
+        height: 50px;
+    }
+
+    .cartCard__price{
+        font-size: 0.8rem;
+    }
+
+    .cartCard__name{
+        font-size: 0.9rem;
+    }
+
+    .cartCard__amountWrapper{
+        margin: 0 10px 0 auto;
+
+    }
+    .cartCard__amountWrapper__amount{
+        font-size: 0.8rem;
+
+    }
+    .cartCard__subtotal{
+        width: 70px;
+
+        font-size: 0.9rem;
+    }
+}
 
 .total-section {
     text-align: right;
     align-self: stretch;
-    margin : 0 20px 0 0;
+    padding : 0 20px 0 0;
     font-size: 1.3rem;
     font-weight: bold;
 
@@ -203,12 +260,13 @@ h2{
     gap: 10px;
     padding: 20px;
     margin: 20px;
-    width:400px;
+    min-width: 50%;
     background-color: var(--green-darkcolor);
     border-radius: 20px;
 }
 
 .commande-box h3{
+    text-align: center;
     color: var(--beige-lightcolor);
     font-size: 1.3rem;
     text-transform: uppercase;
@@ -231,7 +289,7 @@ h2{
     padding: 5px 40px;
     border: 3px ridge var(--beige-darkcolor);
     background-color: var(--beige-lightcolor);
-
+    cursor: pointer;
 }
 .feedback-valid{
     padding: 10px 20px;

@@ -162,7 +162,7 @@ function renderCart() {
             //update the textContents
             productElem.querySelector(".cartCard__amountWrapper__amount").textContent = product.amount;
             let subtotal = (product.amount * (produits.find(u => u.id === product.id).prix));
-            productElem.querySelector(".cartCard__subtotal").textContent = subtotal + " €";
+            productElem.querySelector(".cartCard__subtotal").textContent = Number(subtotal).toFixed(2) + " €";
             total += subtotal;
             odd = !odd;
         }
@@ -172,7 +172,7 @@ function renderCart() {
 
     document.querySelector(".empty-cart-p").classList.toggle("hidden", !emptyCart);
     //update total
-    totalPrice.textContent = total;
+    totalPrice.textContent = Number(total).toFixed(2); // because floating points errors shenanigan i guess
 
 }
 
